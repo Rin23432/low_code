@@ -4,6 +4,8 @@ import { Layout } from 'antd';
 import styles from './MainLayout.module.scss';
 import Logo from '../components/Logo';
 import UserInfo from '../components/UserInfo';
+import { createQuestionService } from '../services/question';
+
 const { Header, Footer, Content } = Layout;
 
 const MainLayout: FC = () => {

@@ -4,7 +4,6 @@ import { Button, Typography } from 'antd';
 import { MANAGE_INDEX_PATHNAME } from '../router';
 import styles from './Home.module.scss'; // Assuming you have a CSS module for styles
 import axios from 'axios';
-
 import '../_mock/index.ts';
 
 const { Title, Paragraph } = Typography;
@@ -13,11 +12,12 @@ const Home: FC = () => {
   const nav = useNavigate();
 
   useEffect(() => {
-    axios.get('/api/test').then((res) => {
-      console.log(res.data);
-    });
+    fetch('/api/test')
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+      });
   }, []);
-
   function clickHandler() {
     nav('/login');
   }
