@@ -1,14 +1,14 @@
 import React, { FC, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './Login.module.scss';
-import { Typography, Space, Form, Input, Button, Checkbox } from 'antd';
-
+import { Typography, Space, Form, Input, Button, Checkbox, message } from 'antd';
+import { useRequest } from 'ahooks';
 import { LoginOutlined, UserAddOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
-import { REGISTER_PATHNAME } from '../router';
-
+import { REGISTER_PATHNAME, MANAGE_INDEX_PATHNAME } from '../router';
+import { loginService } from '../services/user';
 import { useLocation } from 'react-router-dom';
-
+import { setToken } from '../utils/user-token';
 const Login: FC = () => {
   const nav = useNavigate();
   const { Title } = Typography;
@@ -39,10 +39,30 @@ const Login: FC = () => {
     };
   } //取数据
 
+  const { run } = useRequest(
+    async (values) => {
+      const { username, password } = values;
+      const data = await loginService(username, password);
+      return data;
+    },
+    {
+      manual: true,
+      onSuccess: (data) => {
+        const { token = '' } = data;
+        setToken(token);
+        message.success('登录成功');
+        nav(MANAGE_INDEX_PATHNAME);
+      },
+      onError: (err) => {
+        message.error(err.message);
+      },
+    },
+  );
+
   function onFinish(values: any) {
     const { username, password, remember } = values || {};
 
-    console.log(values);
+    run(values);
     if (remember) {
       console.log('记住');
       rememberUser(username, password);
@@ -92,19 +112,8 @@ const Login: FC = () => {
           <Form.Item
             label="密码"
             name="password"
-            dependencies={['password']} //password变化触发重新验证
-            rules={[
-              { required: true, message: '请输入密码' },
-              ({ getFieldValue }) => ({
-                validator(_, value) {
-                  if (!value || getFieldValue('username') !== value) {
-                    return Promise.reject('密码错误');
-                  } else {
-                    return Promise.resolve(new Error('密码错误'));
-                  }
-                },
-              }),
-            ]}
+            // 只保留“必填”校验，删除错误的自定义校验
+            rules={[{ required: true, message: '请输入密码' }]}
           >
             <Input.Password />
           </Form.Item>

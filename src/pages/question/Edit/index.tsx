@@ -1,11 +1,32 @@
 import React, { FC, useEffect, useState } from 'react';
 import useLoadQuestionData from '../../../hooks/useLoadQusetionData';
+import styles from './index.module.scss';
+import { useDispatch, UseDispatch } from 'react-redux';
+import { changeSelectedId } from '../../../store/componentsReducer';
+import EditCanvas from './EditCanvas';
+import { Content } from 'antd/es/layout/layout';
 const Edit: FC = () => {
-  const { loading, data } = useLoadQuestionData();
+  const { loading } = useLoadQuestionData();
+  const dispatch = useDispatch();
+  function clearSelectedId() {
+    dispatch(changeSelectedId(''));
+  }
   return (
     <>
-      <h1>Edit page</h1>
-      {loading ? <div>loading</div> : <div>{JSON.stringify(data)}</div>}
+      <div className={styles.container}>
+        <div style={{ backgroundColor: 'white', height: '40px' }}>Header</div>
+        <div className={styles['content-wrapper']}>
+          <div className={styles.content}>
+            <div className={styles.left}>Left</div>
+            <div className={styles.main} onClick={clearSelectedId}>
+              <div className={styles['canvas-wrapper']}>
+                <EditCanvas loading={loading} />
+              </div>
+            </div>
+            <div className={styles.right}>Right</div>
+          </div>
+        </div>
+      </div>
     </>
   );
 };

@@ -1,12 +1,12 @@
 .container {
-  height: 24px 0;
+  padding: 24px 0;
   width: 1200px;
   margin: 0 auto;
   display: flex;
 }
 
-.left{
-  flex: 0.5;
+.left {
+  width: 120px;
 }
 
 .right {

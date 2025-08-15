@@ -1,16 +1,28 @@
-import React, { FC } from 'react';
+import React, { FC, useState, useEffect } from 'react';
 import { Space, Typography } from 'antd';
 import { FormOutlined } from '@ant-design/icons';
 import styles from './Logo.module.scss';
 import './Logo.module.scss'; // Assuming you have a CSS module for styles
 import { Link } from 'react-router-dom';
+import useGetUserInfo from '../hooks/useGetUserInfo';
 import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import { HOME_PATHNAME, MANAGE_INDEX_PATHNAME } from '../router/index';
+
 const { Title } = Typography;
 
 const Logo: FC = () => {
-  const navigate = useNavigate();
+  const { username } = useGetUserInfo();
+
+  const [pathname, setPathname] = useState(HOME_PATHNAME);
+  useEffect(() => {
+    if (username) {
+      setPathname(MANAGE_INDEX_PATHNAME);
+    }
+  }, [username]);
+
   return (
-    <Link to="/">
+    <Link to={pathname}>
       <div className={styles.container}>
         <Space>
           <Title>

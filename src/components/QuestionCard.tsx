@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import './QuestionCard.module.scss';
 import styles from './QuestionCard.module.scss';
 import { Button, Space, Divider, Tag, Modal, message } from 'antd';
@@ -12,6 +12,8 @@ import {
   ExclamationCircleOutlined,
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import { duplicateQuestionService, updateQuestionService } from '../services/question';
+import { useRequest } from 'ahooks';
 
 type PropsType = {
   _id: string;
@@ -26,16 +28,46 @@ type PropsType = {
 const QuestionCard: FC<PropsType> = (props: PropsType) => {
   const nav = useNavigate();
   const { _id, title, createAt, answerCount, isPublished, isStarred } = props;
+  const [isStarredState, setIsStarredState] = useState(isStarred);
 
-  function duplicate() {
+  const { loading: changeStarLoading, run: changeStar } = useRequest(
+    async () => {
+      await updateQuestionService(_id, {
+        isStarred: !isStarredState,
+      });
+    },
+    {
+      manual: true,
+      onSuccess: () => {
+        setIsStarredState(!isStarredState);
+        message.success('更新完成');
+      },
+    },
+  );
+
+  /*   function duplicate() {
     Modal.confirm({
       title: '是否复制',
       onOk: () => {
         message.success('问卷已复制');
       },
     });
-  }
+  } */
 
+  //复制问卷 (要return data)
+  const { loading: duplicateLoading, run: duplicate } = useRequest(
+    async () => {
+      const data = await duplicateQuestionService(_id);
+      return data;
+    },
+    {
+      manual: true,
+      onSuccess: (data) => {
+        message.success('问卷已复制');
+        nav(`/question/edit/${data.id}`);
+      },
+    },
+  );
   function del() {
     Modal.confirm({
       title: '是否删除该问卷',
@@ -51,7 +83,7 @@ const QuestionCard: FC<PropsType> = (props: PropsType) => {
         <div className={styles.left}>
           <Link to={isPublished ? '/question/stat/${_id}' : `/question/edit/${_id}`}></Link>
           <Space>
-            {isStarred && <StarOutlined style={{ color: 'red' }} />}
+            {isStarredState && <StarOutlined style={{ color: 'red' }} />}
             {title}
           </Space>
         </div>
@@ -87,8 +119,14 @@ const QuestionCard: FC<PropsType> = (props: PropsType) => {
         </div>
         <div className={styles.right}>
           <Space>
-            <Button type="text" icon={<StarOutlined />} size="small">
-              {isStarred ? '取消标星' : '标星'}
+            <Button
+              type="text"
+              icon={<StarOutlined />}
+              size="small"
+              onClick={changeStar}
+              disabled={changeStarLoading}
+            >
+              {isStarredState ? '取消标星' : '标星'}
             </Button>
             <Button type="text" icon={<CopyOutlined />} size="small" onClick={duplicate}>
               复制

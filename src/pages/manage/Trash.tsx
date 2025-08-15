@@ -1,15 +1,20 @@
 import React, { FC, useState } from 'react';
-import { useTitle } from 'ahooks';
+import { useTitle, useRequest } from 'ahooks';
 import styles from './common.module.scss';
-import { Typography, Empty, Table, Tag, Button, Space, Modal } from 'antd';
+import { Typography, Empty, Table, Tag, Button, Space, Modal, Spin, message } from 'antd';
 import QuestionCard from '../../components/QuestionCard';
 import { render } from '@testing-library/react';
 import { is } from 'immer/dist/internal';
 import { isParameter } from 'typescript';
 import { ExclamationOutlined } from '@ant-design/icons';
+import useLoadQuestionListData from '../../hooks/useLoadQuestionListData';
+import ListSearch from '../../components/ListSearch';
+import ListPage from '../../components/ListPage';
+import { updateQuestionService } from '../../services/question';
+import { deleteQuestionService } from '../../services/question';
 const { Title } = Typography;
 const { confirm } = Modal;
-const rawQuestionList = [
+/* const rawQuestionList = [
   {
     _id: 'q1',
     title: '问卷1',
@@ -44,7 +49,7 @@ const rawQuestionList = [
     createAt: '3月14日 13:23',
   },
 ];
-
+ */
 const tableColums = [
   {
     title: '标题',
@@ -67,7 +72,8 @@ const tableColums = [
 ];
 
 const Trash: FC = () => {
-  const [questionList, setQuestionList] = useState(rawQuestionList);
+  const { data = {}, loading, refresh } = useLoadQuestionListData({ isDeleted: true });
+  const { list = [], total = 0 } = data;
   useTitle('冰糖问卷-回收站');
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
@@ -76,27 +82,58 @@ const Trash: FC = () => {
       title: '确认彻底删除选中的问卷吗？',
       icon: <ExclamationOutlined />,
       content: '删除后无法恢复，请谨慎操作',
-      onOk: () => alert(`删除${JSON.stringify(selectedIds)}`),
+      onOk: () => deleteQuestion(),
     });
   }
+
+  const { run: deleteQuestion } = useRequest(
+    async () => {
+      await deleteQuestionService(selectedIds);
+    },
+    {
+      manual: true,
+      debounceWait: 500, //防抖
+      onSuccess: () => {
+        message.success('删除成功');
+        refresh();
+        setSelectedIds([]);
+      },
+    },
+  );
+  const { loading: recoverLoading, run: recover } = useRequest(
+    async () => {
+      for await (const id of selectedIds) {
+        await updateQuestionService(id, { isDeleted: false });
+      }
+    },
+    {
+      manual: true,
+      debounceWait: 500, //防抖
+      onSuccess: () => {
+        message.success('恢复成功');
+        refresh();
+        setSelectedIds([]);
+      },
+    },
+  );
+
   const TableElem = (
     <>
       <div style={{ marginBottom: 16 }}>
         <Space>
-          <Button type="primary" disabled={selectedIds.length === 0}>
+          <Button type="primary" disabled={selectedIds.length === 0} onClick={recover}>
             恢复
           </Button>
-
           <Button danger onClick={del}>
             彻底删除
           </Button>
         </Space>
       </div>
       <Table
-        dataSource={questionList}
+        dataSource={list}
         columns={tableColums}
         pagination={false}
-        rowKey={(q) => q._id}
+        rowKey={(q: any) => q._id}
         rowSelection={{
           type: 'checkbox',
           onChange: (selectedRowKeys, selectedRows) => {
@@ -113,11 +150,22 @@ const Trash: FC = () => {
         <div className={styles.left}>
           <Title level={3}>回收站</Title>
         </div>
-        <div className={styles.right}>搜索</div>
+        <div className={styles.right}>
+          {' '}
+          <ListSearch />
+        </div>
       </div>
       <div className={styles.content}>
-        {questionList.length === 0 && <Empty description="暂无数据" />}
-        {questionList.length > 0 && TableElem}
+        {loading && (
+          <div style={{ textAlign: 'center' }}>
+            <Spin />
+          </div>
+        )}
+        {list.length === 0 && <Empty description="暂无数据" />}
+        {list.length > 0 && TableElem}
+      </div>
+      <div className={styles.footer}>
+        <ListPage total={total} />
       </div>
     </>
   );
