@@ -1,0 +1,35 @@
+.header-wrapper {
+  background-color: white;
+  border: 1px solid #ffffff;
+  padding: 16px 0;
+}
+
+.header {
+  display: flex;
+  margin: 0 2px;
+
+  h1 {
+    font-size: 18px;
+    line-height: 1;
+    color: #007fda;
+    margin-left: 16px;
+    white-space: nowrap; // 防止文字换行
+  }
+
+  .left {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap; // 防止换行
+  }
+
+  .main {
+    flex: 1;
+    text-align: center;
+  }
+
+  .right {
+    flex: 1;
+    text-align: right;
+  }
+}

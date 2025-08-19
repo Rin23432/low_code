@@ -20,3 +20,7 @@
 .component {
   pointer-events: none; //屏蔽鼠标行为，组件不被点击到
 }
+.locked {
+  opacity: 0.5;
+  cursor: not-allowed; //禁用鼠标行为
+}

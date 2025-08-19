@@ -1,0 +1,16 @@
+.wrapper {
+  margin-bottom: 12px;
+  cursor: pointer;
+  background-color: rgb(229, 229, 229);
+  border: 1px solid white;
+  padding: 12px;
+  border-radius: 3px;
+
+  &:hover {
+    border-color: rgb(158, 158, 158);
+  }
+}
+
+.component {
+  pointer-events: none;
+}

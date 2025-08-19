@@ -1,3 +1,4 @@
+import PropComponent from './PropComponent';
 import Component from './Component';
 import { QuestionTitleDefaultProps } from './interface';
 
@@ -9,4 +10,5 @@ export default {
   type: 'questionTitle',
   defaultProps: QuestionTitleDefaultProps,
   Component,
+  PropComponent,
 };

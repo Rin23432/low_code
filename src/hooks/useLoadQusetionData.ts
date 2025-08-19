@@ -32,7 +32,7 @@ function useLoadQuestionData() {
       selectedId = componentList[0].fe_id; //默认选中第一个组件
     }
     // 把组件列表存在store
-    dispatch(resetComponents({ componentList, selectedId }));
+    dispatch(resetComponents({ componentList, selectedId, copiedComponent: null }));
   }, [data]);
   //id变化，触发加载
   useEffect(() => {
