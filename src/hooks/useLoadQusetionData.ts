@@ -4,6 +4,7 @@ import { useRequest } from 'ahooks';
 import { getQuestionService } from '../services/question';
 import { useDispatch } from 'react-redux';
 import { resetComponents } from '../store/componentsReducer';
+import { resetPageInfo } from '../store/pageinfoReducer';
 
 function useLoadQuestionData() {
   const { id = '' } = useParams();
@@ -25,7 +26,7 @@ function useLoadQuestionData() {
   // 数据加载完成，处理数据
   useEffect(() => {
     if (!data) return;
-    const { title = '', componentList = [] } = data;
+    const { title = '', componentList = [], desc = '', js = '', css = '' } = data;
 
     let selectedId = '';
     if (componentList.length > 0) {
@@ -33,7 +34,11 @@ function useLoadQuestionData() {
     }
     // 把组件列表存在store
     dispatch(resetComponents({ componentList, selectedId, copiedComponent: null }));
+
+    // 把问卷信息存在store
+    dispatch(resetPageInfo({ title, desc, js, css }));
   }, [data]);
+
   //id变化，触发加载
   useEffect(() => {
     run(id);

@@ -119,6 +119,71 @@ export const componentsSlice = createSlice({
       copiedComponent.fe_id = nanoid();
       insertNewComponent(state, copiedComponent);
     },
+    //修改组件标题
+    changeComponentTitle: (
+      state: ComponentsStateType,
+      action: PayloadAction<{ fe_id: string; title: string }>,
+    ) => {
+      const { fe_id, title } = action.payload;
+      const curComp = state.componentList.find((c) => c.fe_id === fe_id);
+      if (curComp) {
+        curComp.title = title;
+      }
+    },
+
+    // 选中上一个
+    selectPrevComponent: (draft: ComponentsStateType) => {
+      const { selectedId, componentList } = draft;
+      const selectedIndex = componentList.findIndex((c) => c.fe_id === selectedId);
+
+      if (selectedIndex < 0) return; // 未选中组件
+      if (selectedIndex <= 0) return; // 已经选中了第一个，无法在向上选中
+
+      draft.selectedId = componentList[selectedIndex - 1].fe_id;
+    },
+
+    // 选中下一个
+    selectNextComponent: (draft: ComponentsStateType) => {
+      const { selectedId, componentList } = draft;
+      const selectedIndex = componentList.findIndex((c) => c.fe_id === selectedId);
+
+      if (selectedIndex < 0) return; // 未选中组件
+      if (selectedIndex + 1 === componentList.length) return; // 已经选中了最后一个，无法再向下选中
+
+      draft.selectedId = componentList[selectedIndex + 1].fe_id;
+    },
+    // 拖动组件
+    // 拖动组件 - 优化版（符合Immutable原则）
+    moveComponent: (
+      state: ComponentsStateType,
+      action: PayloadAction<{ oldIndex: number; newIndex: number }>,
+    ) => {
+      const { oldIndex, newIndex } = action.payload;
+      const { componentList } = state;
+
+      // 1. 复制原数组（避免直接修改state）
+      const newComponentList = [...componentList];
+
+      // 2. 处理边界情况（防止索引越界）
+      if (
+        oldIndex < 0 ||
+        oldIndex >= newComponentList.length ||
+        newIndex < 0 ||
+        newIndex >= newComponentList.length ||
+        oldIndex === newIndex
+      ) {
+        return; // 索引无效时不做处理
+      }
+
+      // 3. 移除旧位置元素
+      const [movedItem] = newComponentList.splice(oldIndex, 1);
+
+      // 4. 插入到新位置
+      newComponentList.splice(newIndex, 0, movedItem);
+
+      // 5. 返回新状态（替换原数组）
+      state.componentList = newComponentList;
+    },
   },
 });
 
@@ -132,6 +197,10 @@ export const {
   toggleComponentLocked,
   copySelectedComponent,
   pasteCopiedComponent,
+  changeComponentTitle,
+  moveComponent,
+  selectPrevComponent,
+  selectNextComponent,
 } = componentsSlice.actions;
 
 export default componentsSlice.reducer;

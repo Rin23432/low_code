@@ -8,6 +8,9 @@ import useGetComponentInfo from '../../../hooks/useGetComponentInfo';
 import { ComponentInfoType } from '../../../store/componentsReducer';
 import { getComponentConfByType } from '../../../components/QuestionComponents/index';
 import { MouseEvent } from 'react';
+import SortableItem from '../../../components/DragSortable/SortableItem';
+import SortableContainer from '../../../components/DragSortable/SortableContainer';
+import { moveComponent } from '../../../store/componentsReducer';
 import EditToolbar from './EditToolbar';
 import useBindCanvasKeyPress from '../../../hooks/useBindCanvasKeyPress';
 /* import QuestionTitle from '../../../components/QuestionComponents/QuestionTitle/Component';
@@ -45,26 +48,36 @@ const EditCanvas: FC<PropsType> = (props: PropsType) => {
       </div>
     );
   }
-  return (
-    <div className={styles.canvas}>
-      {componentList.map((item) => {
-        const { fe_id, isLocked } = item;
+  //SortableContainer组件
+  const componentListWithId = componentList.map((c) => ({ ...c, id: c.fe_id }));
 
-        const wrapperDefaultClassName = styles['component-wrapper'];
-        const selectedClassName = styles.selected;
-        const lockedClassName = styles.locked;
-        const wrapperClassName = classNames({
-          [wrapperDefaultClassName]: true,
-          [selectedClassName]: fe_id === selectedId,
-          [lockedClassName]: isLocked,
-        });
-        return (
-          <div className={wrapperClassName} key={fe_id} onClick={(e) => handlieClick(e, fe_id)}>
-            <div className={styles.component}>{genComponent(item)}</div>
-          </div>
-        );
-      })}
-    </div>
+  function handleDragEnd(oldIndex: number, newIndex: number) {
+    dispatch(moveComponent({ oldIndex, newIndex }));
+  }
+  return (
+    <SortableContainer items={componentListWithId} onDragEnd={handleDragEnd}>
+      <div className={styles.canvas}>
+        {componentList.map((item) => {
+          const { fe_id, isLocked } = item;
+
+          const wrapperDefaultClassName = styles['component-wrapper'];
+          const selectedClassName = styles.selected;
+          const lockedClassName = styles.locked;
+          const wrapperClassName = classNames({
+            [wrapperDefaultClassName]: true,
+            [selectedClassName]: fe_id === selectedId,
+            [lockedClassName]: isLocked,
+          });
+          return (
+            <SortableItem id={fe_id} key={fe_id}>
+              <div className={wrapperClassName} key={fe_id} onClick={(e) => handlieClick(e, fe_id)}>
+                <div className={styles.component}>{genComponent(item)}</div>
+              </div>
+            </SortableItem>
+          );
+        })}
+      </div>
+    </SortableContainer>
   );
 };
 

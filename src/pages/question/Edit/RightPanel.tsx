@@ -1,12 +1,29 @@
 import { Tabs } from 'antd';
 import { FileTextOutlined, SettingOutlined } from '@ant-design/icons';
-import React, { FC } from 'react';
+import React, { FC, useEffect, useState } from 'react';
+import useGetComponentInfo from '../../../hooks/useGetComponentInfo';
 import ComponentProp from './ComponentProp';
+import PageSetting from './PageSetting';
 
+enum TAB_KEYS {
+  PROP = 'prop',
+  SETTING = 'setting',
+}
 const RightPanel: FC = () => {
+  const [activeKey, setActiveKey] = useState(TAB_KEYS.PROP);
+  const { selectedId } = useGetComponentInfo();
+
+  useEffect(() => {
+    if (selectedId) {
+      setActiveKey(TAB_KEYS.PROP);
+    } else {
+      setActiveKey(TAB_KEYS.SETTING);
+    }
+  }, [selectedId]);
+
   const tabsItems = [
     {
-      key: 'prop',
+      key: TAB_KEYS.PROP,
       label: (
         <span>
           <FileTextOutlined />
@@ -16,17 +33,17 @@ const RightPanel: FC = () => {
       children: <ComponentProp />,
     },
     {
-      key: 'setting',
+      key: TAB_KEYS.SETTING,
       label: (
         <span>
           <SettingOutlined />
           页面设置
         </span>
       ),
-      children: <div>页面设置</div>,
+      children: <PageSetting />,
     },
   ];
-  return <Tabs defaultActiveKey="prop" items={tabsItems} />;
+  return <Tabs activeKey={activeKey} items={tabsItems} />;
 };
 
 export default RightPanel;
