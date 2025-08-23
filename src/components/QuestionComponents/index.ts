@@ -5,9 +5,15 @@ import { group } from 'console';
 import QuestionParagraphConf, { QuestionParagraphPropsType } from './QuestionParagraph';
 import QuestionInfoConf, { QuestionInfoPropsType } from './QuestionInfo';
 import QuestionTextareaConf, { QuestionTextareaPropsType } from './QuestionTextarea';
-import QuestionRadioConf, { QuestionRadioPropsType } from './QuestionRadio';
-import QuestionCheckboxConf, { QuestionCheckboxPropsType } from './QuestionCheckbox';
-
+import QuestionRadioConf, {
+  QuestionRadioPropsType,
+  QuestionRadioStatPropsType,
+} from './QuestionRadio';
+import QuestionCheckboxConf, {
+  QuestionCheckboxPropsType,
+  QuestionCheckboxStatPropsType,
+} from './QuestionCheckbox';
+import QuestionRadioStatConf from './QuestionRadio/StatComponent';
 //各个组件的prop type
 export type ComponentPropsType = QuestionInputPropsType &
   QuestionTitlePropsType &
@@ -17,6 +23,7 @@ export type ComponentPropsType = QuestionInputPropsType &
   QuestionRadioPropsType &
   QuestionCheckboxPropsType;
 
+type ComponentStatPropsType = QuestionRadioStatPropsType & QuestionCheckboxStatPropsType;
 //组件配置
 export type ComponentConfType = {
   title: string;
@@ -24,6 +31,7 @@ export type ComponentConfType = {
   defaultProps: ComponentPropsType;
   PropComponent: FC<ComponentPropsType>; //属性
   Component: FC<ComponentPropsType>;
+  StatComponent?: FC<ComponentStatPropsType>;
 };
 
 //全部组件配置的列表

@@ -47,7 +47,17 @@ const PageStat: FC<PropsType> = (props: PropsType) => {
     const colTitle = title;
     return {
       title: (
-        <div style={{ cursor: 'pointer' }}>
+        <div
+          style={{ cursor: 'pointer' }}
+          onClick={() => {
+            setSelectedComponentId(fe_id);
+            setSelectedComponentType(c.type);
+          }}
+          onBlur={() => {
+            setSelectedComponentId('');
+            setSelectedComponentType('');
+          }}
+        >
           {fe_id === selectedComponentId && <span style={{ color: '#1890ff' }}>{colTitle}</span>}
           {fe_id !== selectedComponentId && <span>{colTitle}</span>}
         </div>
