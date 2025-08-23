@@ -26,7 +26,14 @@ function useLoadQuestionData() {
   // 数据加载完成，处理数据
   useEffect(() => {
     if (!data) return;
-    const { title = '', componentList = [], desc = '', js = '', css = '' } = data;
+    const {
+      title = '',
+      componentList = [],
+      desc = '',
+      js = '',
+      css = '',
+      isPublished = 'false',
+    } = data;
 
     let selectedId = '';
     if (componentList.length > 0) {
@@ -36,7 +43,7 @@ function useLoadQuestionData() {
     dispatch(resetComponents({ componentList, selectedId, copiedComponent: null }));
 
     // 把问卷信息存在store
-    dispatch(resetPageInfo({ title, desc, js, css }));
+    dispatch(resetPageInfo({ title, desc, js, css, isPublished }));
   }, [data]);
 
   //id变化，触发加载

@@ -9,12 +9,14 @@ import LeftPanel from './LeftPanel';
 import ComponentLib from './ComponentLib';
 import RightPanel from './RightPanel';
 import EditHeader from './EditHeader';
+import { useTitle } from 'ahooks';
 const Edit: FC = () => {
   const { loading } = useLoadQuestionData();
   const dispatch = useDispatch();
   function clearSelectedId() {
     dispatch(changeSelectedId(''));
   }
+  useTitle('问卷编辑');
   return (
     <>
       <div className={styles.container}>
