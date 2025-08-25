@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { lazy } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 
 import Login from '../pages/Login';
@@ -9,11 +9,12 @@ import List from '../pages/manage/List';
 import MainLayout from '../layouts/MainLayout';
 import QuestionLayout from '../layouts/QuestionLayout';
 
-import Edit from '../pages/question/Edit';
 import Register from '../pages/Register';
 import NotFound from '../pages/NotFound';
-import Stat from '../pages/question/Stat';
 import Home from '../pages/Home';
+
+const Edit = lazy(() => import('../pages/question/Edit'));
+const Stat = lazy(() => import('../pages/question/Stat'));
 
 const router = createBrowserRouter([
   {

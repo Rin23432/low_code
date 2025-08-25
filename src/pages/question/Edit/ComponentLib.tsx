@@ -11,7 +11,6 @@ const { Title } = Typography;
 
 const ComponentLib: FC = () => {
   const dispatch = useDispatch();
-
   function genComponent(c: ComponentConfType) {
     const { title, type, Component, defaultProps } = c;
 

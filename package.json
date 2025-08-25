@@ -25,10 +25,10 @@
     "lodash.clonedeep": "^4.5.0",
     "mockjs": "^1.1.0",
     "qrcode.react": "^4.2.0",
-    "react": "^18.2.0",
+    "react": "^19.1.1",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
-    "react-dom": "^18.2.0",
+    "react-dom": "^19.1.1",
     "react-hook-form": "^7.43.1",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.7.1",
@@ -36,17 +36,20 @@
     "recharts": "^3.1.2",
     "redux": "^5.0.1",
     "redux-undo": "^1.0.0-beta9-9-7",
+    "source-map-explorer": "^2.5.3",
     "styled-components": "^5.3.6",
     "styled-jsx": "^5.1.2",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
     "start": "craco start",
     "build": "craco build",
     "test": "craco test",
     "eject": "react-scripts eject",
     "format": "prettier --write \"src/**/*.+(js|ts|jsx|tsx)\"",
     "lint": "eslint \"src/**/*.+(js|ts|jsx|tsx)\"",
+    "lint:fix": "eslint \"src/**/*.+(js|ts|jsx|tsx)\" --fix",
     "prepare": "husky"
   },
   "eslintConfig": {

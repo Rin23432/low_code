@@ -4,10 +4,11 @@ import { QuestionInfoPropsType, QuestionInfoDefaultProps } from './interface';
 
 export * from './interface';
 
-export default {
+const QuestionInfoConf = {
   title: '问卷信息',
   type: 'questionInfo',
   Component,
   PropComponent,
   defaultProps: QuestionInfoDefaultProps,
 };
+export default QuestionInfoConf;

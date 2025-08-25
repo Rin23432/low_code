@@ -6,7 +6,7 @@ import StatComponent from './StatComponent';
 
 export * from './interface';
 
-export default {
+const QuestionRadioConf = {
   title: '单选',
   type: 'questionRadio',
   defaultProps: QuestionRadioDefaultProps,
@@ -14,3 +14,5 @@ export default {
   PropComponent, //修改属性
   StatComponent, //统计组件
 };
+
+export default QuestionRadioConf;

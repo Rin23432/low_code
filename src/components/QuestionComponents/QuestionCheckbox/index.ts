@@ -5,7 +5,7 @@ import StatComponent from './StatComponent';
 import { QuestionCheckboxDefaultProps } from './interface';
 export * from './interface';
 
-export default {
+const QuestionCheckboxConf = {
   title: '多选',
   type: 'questionCheckbox',
   defaultProps: QuestionCheckboxDefaultProps,
@@ -13,3 +13,6 @@ export default {
   PropComponent,
   StatComponent,
 };
+
+export default QuestionCheckboxConf;
+
